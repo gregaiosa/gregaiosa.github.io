@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://gaiosa-bot.github.io/sitemap.xml
+Sitemap: https://gregaiosa.github.io/sitemap.xml
