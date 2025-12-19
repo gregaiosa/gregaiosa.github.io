@@ -1,6 +1,6 @@
 ---
 layout: page
-title: projects
+title: Projects
 permalink: /
 description: A growing collection of your cool projects.
 display_categories: [work, fun]
