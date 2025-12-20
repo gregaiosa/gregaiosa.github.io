@@ -59,6 +59,11 @@ max_width: 930px
 # TODO: add layout settings (single page vs. multi-page)
 
 # -----------------------------------------------------------------------------
+# Social links for navbar
+# -----------------------------------------------------------------------------
+linkedin_username: gregory-aiosa
+
+# -----------------------------------------------------------------------------
 # Open Graph & Schema.org
 # -----------------------------------------------------------------------------
 # Display links to the page with a preview object on social media.
