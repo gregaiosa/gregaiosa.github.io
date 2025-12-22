@@ -4,7 +4,7 @@ layout: page
 title: Github
 nav: true
 nav_order: 5
-redirect: https://github.com/gregaiosa
+external_url: https://github.com/gregaiosa
 ---
 
 <!-- <script>
