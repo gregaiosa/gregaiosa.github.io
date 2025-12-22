@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Robot Domino Artist
-description: with background image
+description: Developed a Python ROS 2 package for a Franka Emika Robot arm to find and manipulate dominoes.
 img: assets/img/Squiggle_Placement_cropped.png
 importance: 1
 category: work
