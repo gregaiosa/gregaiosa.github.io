@@ -4,7 +4,7 @@ layout: page
 title: Email
 nav: true
 nav_order: 3
-external_url: gregoryaiosa@gmail.com
+external_url: mailto:gregoryaiosa@gmail.com
 ---
 
 <!-- <script>
