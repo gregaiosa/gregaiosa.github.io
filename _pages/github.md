@@ -1,13 +1,14 @@
 ---
 layout: page
-permalink: /github/
+# permalink: /github/
 title: Github
 nav: true
 nav_order: 5
+redirect: https://github.com/gregaiosa
 ---
 
-<script>
+<!-- <script>
   window.location.href = "https://github.com/gregaiosa";
 </script>
 
-<p>Redirecting to <a href="https://github.com/gregaiosa">LinkedIn</a>...</p>
+<p>Redirecting to <a href="https://github.com/gregaiosa">LinkedIn</a>...</p> -->
