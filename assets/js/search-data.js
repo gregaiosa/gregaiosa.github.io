@@ -99,7 +99,7 @@ ninja.data = [{
         title: 'CV',
         section: 'Socials',
         handler: () => {
-          window.open("/assets/pdf/gregory_aiosa_resume.pdf", "_blank");
+          window.open("/assets/pdf/Gregory_Aiosa_Resume.pdf", "_blank");
         },
       },{
         id: 'social-email',
