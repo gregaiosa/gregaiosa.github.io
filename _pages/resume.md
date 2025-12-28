@@ -4,7 +4,7 @@ layout: page
 title: Resume
 nav: true
 nav_order: 1
-external_url: /assets/pdf/Gregory_Aiosa_resume.pdf
+external_url: /assets/pdf/Gregory_Aiosa_Resume.pdf
 ---
 
 <!-- <script>
