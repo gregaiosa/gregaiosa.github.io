@@ -7,18 +7,11 @@ importance: 1
 category: work
 ---
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+This project uses the Franka Emika Robot (FER) to manipulate dominoes into several preset patterns. Using a computer vision algorithm, the robot records the positions of the dominoes and then manipulates the dominoes to the goal positions before toppling them.
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+To avoid collisions, the algorithm reorients the domino before placing it in the final position. Due to the variable height of the workspace surface, force-based placement was implemented to ensure reliable contact with the surface. 
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+The project relies on an accurate extrinsic calibration of the camera. The camera was calibrated in-hand using <code>easy_handeye2</code>, and the resulting calibration was used throughout the manipulation pipeline.
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
