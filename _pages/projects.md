@@ -2,7 +2,7 @@
 layout: page
 title: Projects
 permalink: /
-description: A growing collection of your cool projects.
+description: # A growing collection of your cool projects.
 display_categories: [work, fun]
 horizontal: false
 ---
