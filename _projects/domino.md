@@ -6,6 +6,7 @@ img: assets/img/Squiggle_Placement_cropped.png
 importance: 1
 category: work
 ---
+<h2>Summary</h2>
 
 This project uses the Franka Emika Robot (FER) to manipulate dominoes into several preset patterns. Using a computer vision algorithm, the robot records the positions of the dominoes and then manipulates the dominoes to the goal positions before toppling them.
 
