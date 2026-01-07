@@ -30,7 +30,7 @@ The project relies on an accurate extrinsic calibration of the camera. The camer
 </div>
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include video.liquid path="assets/video/squiggle_splitscreen.mp4" title="example image" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
+        {% include video.liquid path="assets/video/domino_squiggle_portfolio.mp4" title="example image" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
     </div>
 </div>
 <div class="caption">
