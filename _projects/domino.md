@@ -7,7 +7,6 @@ importance: 1
 # category: work
 github: https://github.com/gregaiosa/Robot-Domino-Artist
 ---
-<a href="https://github.com/gregaiosa/Robot-Domino-Artist" class="btn btn-sm z-depth-0" role="button">View Code on GitHub</a>
 <h2>Summary</h2>
 
 This project uses the Franka Emika Robot (FER) to manipulate dominoes into several preset patterns. Using a computer vision algorithm, the robot records the positions of the dominoes and then arranges them into the goal positions before initiating the toppling sequence.
@@ -53,4 +52,7 @@ This eliminated hard-coded height values and significantly increased the robustn
 
 While this required careful management of collision objects and scene state, it ultimately turned discrepancies between simulation and the real world into a tool rather than a limitation. 
 
+
 *Contributors: Gregory Aiosa, Michael Jenz, Daniel Augustin, Chenyu Zhu*
+
+<a href="https://github.com/gregaiosa/Robot-Domino-Artist" class="btn z-depth-0" role="button">View Code on GitHub</a>
