@@ -4,7 +4,8 @@ title: Robot Domino Artist
 description: Developed a Python ROS 2 package for a Franka Emika Robot arm to find and manipulate dominoes.
 img: assets/img/Squiggle_Placement_cropped.png
 importance: 1
-category: work
+# category: work
+github: https://github.com/gregaiosa/Robot-Domino-Artist
 ---
 <h2>Summary</h2>
 
