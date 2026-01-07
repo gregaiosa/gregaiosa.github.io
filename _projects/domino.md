@@ -8,7 +8,7 @@ category: work
 ---
 <h2>Summary</h2>
 
-This project uses the Franka Emika Robot (FER) to manipulate dominoes into several preset patterns. Using a computer vision algorithm, the robot records the positions of the dominoes and then manipulates the dominoes to the goal positions before toppling them.
+This project uses the Franka Emika Robot (FER) to manipulate dominoes into several preset patterns. Using a computer vision algorithm, the robot records the positions of the dominoes and then arranges them into the goal positions before initiating the toppling sequence.
 
 To avoid collisions, the algorithm reorients the domino before placing it in the final position. Due to the variable height of the workspace surface, force-based placement was implemented to ensure reliable contact with the surface. 
 
@@ -20,7 +20,7 @@ The project relies on an accurate extrinsic calibration of the camera. The camer
     </div>
 </div>
 <div class="caption">
-    This video shows the full system performing domino placement followed by a toppling sequence once all dominoes reach their goal poses
+    This video shows the full system performing domino placement followed by a toppling sequence once all dominoes reach their goal poses.
 </div>
 
 <h2>System Architecture</h2>
@@ -35,34 +35,20 @@ The domino movement algorithm is the core routine responsible for moving dominoe
 </ol>
 The staging step is critical due to the small size of the dominoes and the geometry of the gripper. Attempting to place dominoes directly from a lying configuration resulted in collisions with neighboring dominoes. Reorienting them first enabled safe and repeatable placement. 
 
-<div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
-</div>
+<h3>Domino Vision Algorithm</h3>
+The vision pipeline identifies the pose of each domino on the table and publishes these poses to the TF tree when requested by the manipulation node. 
+<ol>
+    <li><strong>Position Identification:</strong> Color filtering is used to detect domino centers in the image, and depth data is combined with camera intrinsics to compute 3D positions. </li>
+    <li><strong>Orientation Identification:</strong> Bounding boxes are used to estimate the domino’s orientation about the vertical axis, which is converted into a quaternion. </li>
+</ol>
 
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
+This approach assumes the camera is perpendicular to the table and that the table surface is flat. In practice, these assumptions were imperfect and introduced small pose errors that accumulated during placement. 
 
-{% raw %}
+<h3>Force-Controlled Placement</h3>
+To compensate for inaccuracies in table height and vision estimation, force-controlled placement was implemented. During pickup and placement, the robot lowers the gripper until the measured joint effort exceeds a threshold, indicating contact with the table.
 
-```html
-<div class="row justify-content-sm-center">
-  <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-</div>
-```
+This eliminated hard-coded height values and significantly increased the robustness of the system. Implementing this behavior required temporarily disabling collision objects for the table and dominoes to prevent planning failures during forced contact.
 
-{% endraw %}
+While this required careful management of collision objects and scene state, it ultimately turned discrepancies between simulation and the real world into a tool rather than a limitation. 
+
+*Contributors: Gregory Aiosa, Michael Jenz, Daniel Augustin, Chenyu Zhu*
