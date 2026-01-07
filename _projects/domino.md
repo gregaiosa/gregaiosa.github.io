@@ -14,7 +14,7 @@ To avoid collisions, the algorithm reorients the domino before placing it in the
 
 The project relies on an accurate extrinsic calibration of the camera. The camera was calibrated in-hand using <code>easy_handeye2</code>, and the resulting calibration was used throughout the manipulation pipeline.
 
-<div class="row">
+<!-- <div class="row">
     <div class="col-sm mt-3 mt-md-0">
         {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
     </div>
@@ -27,19 +27,26 @@ The project relies on an accurate extrinsic calibration of the camera. The camer
 </div>
 <div class="caption">
     Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
+</div> -->
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
         {% include video.liquid path="assets/video/domino_squiggle_portfolio.mp4" title="example image" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
     </div>
 </div>
 <div class="caption">
-    This image can also have a caption. It's like magic.
+    This video shows the full system performing domino palcement followed by a toppling sequence once all dominoes reach their goal poses
 </div>
 
-You can also put regular text between your rows of images, even citations.
-Say you wanted to write a bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
+<h2>System Architecture</h2>
+
+<h3>Domino Movement Algorithm</h3>
+The domino movement algorithm is the core routine responsible for moving dominoes from their initial positions to the final pattern. Each domion follows a three-stage process:
+<ol>
+    <li>Initial pickup from the table</li>
+    <li>Staging and reorientation into a standing configuration</li>
+    <li>Final placement into the goal pose</li>
+</ol>
+The staging step is critical due to the small size of the dominoes and the geometry of the gripper. Attempting to place dominoes directly from a lying configuration resulted in collisions with neighboring dominoes. Reorienting them first enabled safe and repeatable placement. 
 
 <div class="row justify-content-sm-center">
     <div class="col-sm-8 mt-3 mt-md-0">
