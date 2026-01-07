@@ -9,7 +9,7 @@ github: https://github.com/gregaiosa/Robot-Domino-Artist
 ---
 <h2>Summary</h2>
 
-a href="https://github.com/gregaiosa/Robot-Domino-Artist" class="btn btn-sm z-depth-0" role="button">View Code on GitHub</a>
+<a href="https://github.com/gregaiosa/Robot-Domino-Artist" class="btn btn-sm z-depth-0" role="button">View Code on GitHub</a>
 
 This project uses the Franka Emika Robot (FER) to manipulate dominoes into several preset patterns. Using a computer vision algorithm, the robot records the positions of the dominoes and then arranges them into the goal positions before initiating the toppling sequence.
 
