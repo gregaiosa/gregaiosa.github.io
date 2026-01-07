@@ -14,33 +14,20 @@ To avoid collisions, the algorithm reorients the domino before placing it in the
 
 The project relies on an accurate extrinsic calibration of the camera. The camera was calibrated in-hand using <code>easy_handeye2</code>, and the resulting calibration was used throughout the manipulation pipeline.
 
-<!-- <div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div> -->
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
         {% include video.liquid path="assets/video/domino_squiggle_portfolio.mp4" title="example image" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
     </div>
 </div>
 <div class="caption">
-    This video shows the full system performing domino palcement followed by a toppling sequence once all dominoes reach their goal poses
+    This video shows the full system performing domino placement followed by a toppling sequence once all dominoes reach their goal poses
 </div>
 
 <h2>System Architecture</h2>
 
 <h3>Domino Movement Algorithm</h3>
-The domino movement algorithm is the core routine responsible for moving dominoes from their initial positions to the final pattern. Each domion follows a three-stage process:
+
+The domino movement algorithm is the core routine responsible for moving dominoes from their initial positions to the final pattern. Each domino follows a three-stage process:
 <ol>
     <li>Initial pickup from the table</li>
     <li>Staging and reorientation into a standing configuration</li>
