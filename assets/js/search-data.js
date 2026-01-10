@@ -44,12 +44,7 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/about/";
           },
-        },{id: "projects-project-1",
-          title: 'project 1',
-          description: "with background image",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/1_project/";
-            },},{id: "projects-robot-domino-artist",
+        },{id: "projects-robot-domino-artist",
           title: 'Robot Domino Artist',
           description: "Developed a Python ROS 2 package for a Franka Emika Robot arm to find and manipulate dominoes.",
           section: "Projects",handler: () => {
