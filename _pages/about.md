@@ -25,7 +25,7 @@ Received my BS in Mechanical Engineering from the University of Florida in 2020.
 
 I worked as a Mechanical Engineer for five years at [Slice Engineering LLC](https://www.sliceengineering.com) in Gainesville, FL where I designed and tested end-effectors for FDM 3D printers. 
 
-My area of interests are Automation, SLAM, and Perception which are reflected in my [projects](al-folio/projects/).
+My area of interests are Automation, SLAM, and Perception which are reflected in my [projects](/projects/).
 
 <!-- Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](http://reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
 
