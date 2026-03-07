@@ -46,7 +46,7 @@ ninja.data = [{
           },
         },{id: "projects-robot-domino-artist",
           title: 'Robot Domino Artist',
-          description: "Developed a Python ROS 2 package for a Franka Emika Robot arm to find and manipulate dominoes.",
+          description: "Developed a Python ROS 2 package for a Franka Emika Robot arm to find and manipulate dominoes. Utilized OpenCV to detect the dominoes and implemented force control for precise placement.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/domino/";
             },},{
