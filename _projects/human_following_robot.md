@@ -21,7 +21,7 @@ An autonomous human-following system implemented on a Clearpath Jackal mobile ro
 <h2 class="mt-2 mb-3">System Architecture</h2>
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/Human_Following_Robot.svg" title="example image" class="img-fluid rounded z-depth-0" %}
+        {% include figure.liquid loading="eager" path="assets/img/Human_Following_Robot.svg" title="System Architecture" class="img-fluid rounded z-depth-0" %}
     </div>
 </div>
 
