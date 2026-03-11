@@ -49,6 +49,11 @@ ninja.data = [{
           description: "Developed a Python ROS 2 package for a Franka Emika Robot arm to find and manipulate dominoes. Utilized OpenCV to detect the dominoes and implemented force control for precise placement.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/domino/";
+            },},{id: "projects-human-following-robot",
+          title: 'Human Following Robot',
+          description: "Integrating YOLO and SLAM with a Clearpath Robotics Jackal to locate and track a specific person while listening to gesture-based commands.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/human_following_robot/";
             },},{
         id: 'social-cv',
         title: 'CV',
