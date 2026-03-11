@@ -1,73 +1,83 @@
 ---
 layout: page
 title: Human Following Robot
-description: Integrating YOLO and SLAM with a Clearpath Robotics Jackal to locate and 
-track a specific person while listening to hand gesture-based commands.
-img: assets/img/12.jpg
+description: Integrating YOLO and SLAM with a Clearpath Robotics Jackal to locate and track a specific person while listening to gesture-based commands.
+img: assets/video/following_video_cropped.mp4
 importance: 2
+github: https://github.com/gregaiosa/robot-follower
 # category: work
 ---
 
 <h2>Summary</h2>
 
-This project involves using a Clearpath Jackal to follow a human in real-time using
-ROS 2 and YOLO. 
+An autonomous human-following system implemented on a Clearpath Jackal mobile robot. Utilizing ROS 2 and YOLO pose detection, the robot dynamically tracks, pursues, and navigates toward a designated person in real-time without relying on wearable sensors or tags.
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include video.liquid path="assets/video/following_video.mp4" title="Human following robot demonstration" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
     </div>
 </div>
-<div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
+
+<h2 class="mt-2 mb-3">System Architecture</h2>
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        {% include figure.liquid loading="eager" path="assets/img/Human_Following_Robot.svg" title="example image" class="img-fluid rounded z-depth-0" %}
     </div>
 </div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
-</div>
 
-You can also put regular text between your rows of images, even citations.
-Say you wanted to write a bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, _bled_ for your project, and then... you reveal its glory in the next row of images.
+<h2 class="mt-2 mb-3">Key Capabilities</h2>
+
+<h3>Vision-Based Tracking</h3>
+<ul>
+<li>Leverages YOLO to identify the target and continuously orients the robot to keep the person centered within the camera frame.</li>
+<li>Uses a RealSense d435i to gather the RGB image and the depth data to determine the robot's distance to the person.</li>
+</ul>
+
+<h3>Gesture Control</h3>
+<ul>
+<li>Recognizes and responds to visual gesture commands, allowing the user to initiate or halt the following behavior hands-free.</li>
+<li>Utilizes YOLO's pose detection trained on the Hand Keypoints dataset to track individual keypoints and convert them into commands.</li>
+</ul>
+
+<h3>Autonomous Navigation & Obstacle Avoidance</h3>
+<ul>
+<li>Safely maneuvers through environments, calculating dynamic paths to the target while preventing collisions.</li>
+<li>Remains approximately 1 meter away from the person to give them space and keep them in the camera frame.</li>
+<li>Integrated the Nav2 stack, SLAM Toolbox, and a Velodyne LiDAR sensor to achieve this.</li>
+</ul>
+
+<h3>Search & Reacquisition</h3>
+<ul>
+<li>If line-of-sight is broken, the system calculates the target's last known position to autonomously explore and reacquire visual contact.</li>
+<li>When the person can no longer be found at their last known position, the robot spins in place in the direction the person left the camera frame.</li>
+</ul>
+
+
+<style>
+  /* Forces the exact 3:4 width ratio for equal heights */
+  .vid-4-3 { flex: 0 0 42.85%; max-width: 42.85%; }
+  .vid-16-9 { flex: 0 0 57.15%; max-width: 57.15%; }
+  
+  /* Ensures videos stack on top of each other on mobile screens */
+  @media (max-width: 576px) {
+    .vid-4-3, .vid-16-9 { flex: 0 0 100%; max-width: 100%; }
+  }
+</style>
 
 <div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+    <div class="col-sm mt-3 mt-md-0 vid-4-3">
+        {% include video.liquid path="assets/video/robot_pov.mp4" title="Robot vision" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
     </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+    <div class="col-sm mt-3 mt-md-0 vid-16-9">
+        {% include video.liquid path="assets/video/nav_map.mp4" title="Navigation map" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
     </div>
 </div>
+
 <div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
+    (Left) Robot point of view while tracking. (Right) Robot planning and navigation.
 </div>
 
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
+<h2>Discussion</h2>
+The tracking system performed reliably, especially considering all processing was executed onboard a 4th-generation i5 CPU. The project successfully proved the feasibility of dynamic, markerless human tracking using only onboard vision and SLAM. Future iterations would benefit from upgraded compute hardware to allow for higher-frequency pose processing and more aggressive dynamic tracking.
 
-{% raw %}
-
-```html
-<div class="row justify-content-sm-center">
-  <div class="col-sm-8 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-  <div class="col-sm-4 mt-3 mt-md-0">
-    {% include figure.liquid path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-  </div>
-</div>
-```
-
-{% endraw %}
+<a href="https://github.com/gregaiosa/robot-follower" class="btn z-depth-0" role="button">View Code on GitHub</a>
