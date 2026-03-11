@@ -10,7 +10,18 @@ github: https://github.com/gregaiosa/robot-follower
 
 <h2>Summary</h2>
 
-An autonomous human-following system implemented on a Clearpath Jackal mobile robot. Utilizing ROS 2 and YOLO pose detection, the robot dynamically tracks, pursues, and navigates toward a designated person in real-time without relying on wearable sensors or tags.
+An autonomous human-following system implemented on a Clearpath Jackal mobile robot. Utilizing <strong>ROS 2</strong> and <strong>YOLO</strong> pose detection, the robot dynamically tracks, pursues, and navigates toward a designated person in real-time without relying on wearable sensors or tags.
+
+<div class="mt-3 mb-4">
+    <span class="badge badge-pill badge-info z-depth-1">ROS 2</span>
+    <span class="badge badge-pill badge-info z-depth-1">Python</span>
+    <span class="badge badge-pill badge-info z-depth-1">YOLO26</span>
+    <span class="badge badge-pill badge-info z-depth-1">Nav2</span>
+    <span class="badge badge-pill badge-info z-depth-1">SLAM Toolbox</span>
+    <span class="badge badge-pill badge-info z-depth-1">Clearpath Jackal</span>
+    <span class="badge badge-pill badge-info z-depth-1">Intel RealSense</span>
+    <span class="badge badge-pill badge-info z-depth-1">Velodyne LiDAR</span>
+</div>
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
@@ -29,21 +40,21 @@ An autonomous human-following system implemented on a Clearpath Jackal mobile ro
 
 <h3>Vision-Based Tracking</h3>
 <ul>
-<li>Leverages YOLO to identify the target and continuously orients the robot to keep the person centered within the camera frame.</li>
-<li>Uses a RealSense d435i to gather the RGB image and the depth data to determine the robot's distance to the person.</li>
+<li>Leverages <strong>YOLO</strong> to identify the target and continuously orients the robot to keep the person centered within the camera frame.</li>
+<li>Uses a <strong>RealSense d435i</strong> to gather the RGB image and the depth data to determine the robot's distance to the person.</li>
 </ul>
 
 <h3>Gesture Control</h3>
 <ul>
 <li>Recognizes and responds to visual gesture commands, allowing the user to initiate or halt the following behavior hands-free.</li>
-<li>Utilizes YOLO's pose detection trained on the Hand Keypoints dataset to track individual keypoints and convert them into commands.</li>
+<li>Utilizes YOLO's pose detection trained on the <strong>Hand Keypoints</strong> dataset to track individual keypoints and convert them into commands.</li>
 </ul>
 
 <h3>Autonomous Navigation & Obstacle Avoidance</h3>
 <ul>
 <li>Safely maneuvers through environments, calculating dynamic paths to the target while preventing collisions.</li>
 <li>Remains approximately 1 meter away from the person to give them space and keep them in the camera frame.</li>
-<li>Integrated the Nav2 stack, SLAM Toolbox, and a Velodyne LiDAR sensor to achieve this.</li>
+<li>Integrated the <strong>Nav2</strong> stack, <strong>SLAM Toolbox</strong>, and a <strong>Velodyne LiDAR</strong> sensor to achieve this.</li>
 </ul>
 
 <h3>Search & Reacquisition</h3>
