@@ -38,54 +38,80 @@ Implemented autonomous human-following on a Clearpath Jackal mobile robot. The s
 
 
 <h2>Vision-Based Tracking</h2>
-<ul>
-<li>Deploys <strong>YOLO</strong> to identify the target and continuously orients the robot to keep the person centered within the camera frame.</li>
-<li>Extracts RGB and depth data via a <strong>RealSense d435i</strong> to continuously calculate the robot's distance to the person.</li>
-</ul>
-
-<h2>Gesture Control</h2>
-<ul>
-<li>Recognizes and responds to visual gesture commands, allowing the user to initiate or halt the following behavior hands-free.</li>
-<li>Maps individual joint keypoints to specific control commands through YOLO pose detection, trained on the <strong>Hand Keypoints</strong> dataset.</li>
-</ul>
-
-<h2>Autonomous Navigation & Obstacle Avoidance</h2>
-<ul>
-<li>Safely maneuvers through environments, calculating dynamic paths to the target while preventing collisions.</li>
-<li>Remains approximately 1 meter away from the person to give them space and keep them in the camera frame.</li>
-<li>Integrates the <strong>Nav2</strong> stack, <strong>SLAM Toolbox</strong>, and a <strong>Velodyne LiDAR</strong> sensor to achieve reliable spatial awareness.</li>
-</ul>
-
-<h2>Search & Reacquisition</h2>
-<ul>
-<li>If line-of-sight is broken, the system calculates the target's last known position to autonomously explore and reacquire visual contact.</li>
-<li>Initiates a rotational search pattern in the direction the person exited the frame if they are no longer detected at their last known coordinates.</li>
-</ul>
-
-
-<style>
-  /* Forces the exact 3:4 width ratio for equal heights */
-  .vid-4-3 { flex: 0 0 42.85%; max-width: 42.85%; }
-  .vid-16-9 { flex: 0 0 57.15%; max-width: 57.15%; }
-  
-  /* Ensures videos stack on top of each other on mobile screens */
-  @media (max-width: 576px) {
-    .vid-4-3, .vid-16-9 { flex: 0 0 100%; max-width: 100%; }
-  }
-</style>
-
-<div class="row justify-content-sm-center">
-    <div class="col-sm mt-3 mt-md-0 vid-4-3">
+<div class="row mt-3 align-items-center">
+    <div class="col-sm-7">
+        <ul>
+            <li>Deploys <strong>YOLO</strong> to identify the target and continuously orients the robot to keep the person centered within the camera frame.</li>
+            <li>Extracts RGB and depth data via a <strong>RealSense d435i</strong> to continuously calculate the robot's distance to the person.</li>
+        </ul>
+    </div>
+    
+    <div class="col-sm-5 mt-3 mt-sm-0">
         {% include video.liquid path="assets/video/robot_pov.mp4" title="Robot vision" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
-        <div class="caption">
+        <div class="caption mt-2">
             Robot point of view while tracking.
         </div>
     </div>
+</div>
+
+<h2>Gesture Control</h2>
+<div class="row mt-3 align-items-center">
+    <div class="col-sm-6">
+        <ul>
+            <li>Recognizes and responds to visual gesture commands, allowing the user to initiate or halt the following behavior hands-free.</li>
+            <li>Maps individual joint keypoints to specific control commands through YOLO pose detection, trained on the <strong>Hand Keypoints</strong> dataset.</li>
+        </ul>
+    </div>
     
-    <div class="col-sm mt-3 mt-md-0 vid-16-9">
-        {% include video.liquid path="assets/video/nav_map.mp4" title="Navigation map" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
-        <div class="caption">
+    <div class="col-sm-6 mt-3 mt-sm-0">
+        <div class="row">
+            <div class="col-6">
+                {% include video.liquid path="assets/video/follow_gesture.mp4" title="Follow gesture command" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
+                <div class="caption mt-2">
+                    Initiate follow.
+                </div>
+            </div>
+            <div class="col-6">
+                {% include video.liquid path="assets/video/stop_gesture.mp4" title="Stop gesture command" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
+                <div class="caption mt-2">
+                    Wait command.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2>Autonomous Navigation & Obstacle Avoidance</h2>
+<div class="row mt-3 align-items-center">
+    <div class="col-sm-7">
+        <ul>
+            <li>Safely maneuvers through environments, calculating dynamic paths to the target while preventing collisions.</li>
+            <li>Remains approximately 1 meter away from the person to give them space and keep them in the camera frame.</li>
+            <li>Integrates the <strong>Nav2</strong> stack, <strong>SLAM Toolbox</strong>, and a <strong>Velodyne LiDAR</strong> sensor to achieve reliable spatial awareness.</li>
+        </ul>
+    </div>
+    
+    <div class="col-sm-5 mt-3 mt-sm-0">
+        {% include video.liquid path="assets/video/obstacle_avoidance.mp4" title="Navigation map" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
+        <div class="caption mt-2">
             Robot planning and navigation.
+        </div>
+    </div>
+</div>
+
+<h2>Search & Reacquisition</h2>
+<div class="row mt-3 align-items-center">
+    <div class="col-sm-7">
+        <ul>
+            <li>If line-of-sight is broken, the system calculates the target's last known position to autonomously explore and reacquire visual contact.</li>
+            <li>Initiates a rotational search pattern in the direction the person exited the frame if they are no longer detected at their last known coordinates.</li>
+        </ul>
+    </div>
+    
+    <div class="col-sm-5 mt-3 mt-sm-0">
+        {% include video.liquid path="assets/video/reacquisition.mp4" title="Target reacquisition search" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
+        <div class="caption mt-2">
+            Autonomous search pattern.
         </div>
     </div>
 </div>
