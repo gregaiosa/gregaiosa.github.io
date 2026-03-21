@@ -3,7 +3,7 @@ layout: page
 title: Human Following Robot
 description: Integrating YOLO and SLAM with a Clearpath Robotics Jackal to locate and track a specific person while listening to gesture-based commands.
 img: assets/video/following_video_cropped.mp4
-importance: 2
+importance: 1
 github: https://github.com/gregaiosa/robot-follower
 # category: work
 ---
