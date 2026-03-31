@@ -10,7 +10,7 @@ github: https://github.com/gregaiosa/robot-follower
 
 <h2>Summary</h2>
 
-Implemented autonomous human-following on a Clearpath Jackal mobile robot. The system uses <strong>ROS 2</strong> and <strong>YOLO</strong> pose detection to dynamically track, pursue, and navigate toward a designated person in real-time without relying on wearable sensors or tags.
+Implemented autonomous human-following on a Clearpath Jackal mobile robot. The system uses <strong>ROS 2</strong> with a full <strong>Nav2</strong> stack and <strong>YOLO</strong> pose detection to dynamically track, pursue, and navigate toward a designated person in real-time without relying on wearable sensors or tags.
 
 <div class="mt-3 mb-4">
     <span class="badge badge-pill badge-info z-depth-1">ROS 2</span>
@@ -56,14 +56,14 @@ Implemented autonomous human-following on a Clearpath Jackal mobile robot. The s
 
 <h2>Gesture Control</h2>
 <div class="row mt-3 align-items-center">
-    <div class="col-sm-6">
+    <div class="col-sm-5">
         <ul>
             <li>Recognizes and responds to visual gesture commands, allowing the user to initiate or halt the following behavior hands-free.</li>
             <li>Maps individual joint keypoints to specific control commands through YOLO pose detection, trained on the <strong>Hand Keypoints</strong> dataset.</li>
         </ul>
     </div>
     
-    <div class="col-sm-6 mt-3 mt-sm-0">
+    <div class="col-sm-7 mt-3 mt-sm-0">
         <div class="row">
             <div class="col-6">
                 {% include video.liquid path="assets/video/follow_gesture.mp4" title="Follow gesture command" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
@@ -74,7 +74,7 @@ Implemented autonomous human-following on a Clearpath Jackal mobile robot. The s
             <div class="col-6">
                 {% include video.liquid path="assets/video/stop_gesture.mp4" title="Stop gesture command" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
                 <div class="caption mt-2">
-                    Wait command.
+                    Halt command.
                 </div>
             </div>
         </div>
