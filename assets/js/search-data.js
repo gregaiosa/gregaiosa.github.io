@@ -49,6 +49,11 @@ ninja.data = [{
           description: "Developed a Python ROS 2 package for a Franka Emika Robot arm to find and manipulate dominoes. Utilized OpenCV to detect the dominoes and implemented force control for precise placement.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/domino/";
+            },},{id: "projects-ekf-slam-from-scratch",
+          title: 'EKF SLAM from Scratch',
+          description: "Built an EKF SLAM system in C++ and ROS 2 from scratch, including a custom 2D rigid-body geometry library, a physics-based simulator with Gaussian noise, wheel slip, and collision detection, and a LiDAR landmark detection pipeline using unsupervised clustering and circle regression. Implemented the full Extended Kalman Filter SLAM loop with both known and unknown data association.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/ekf_slam/";
             },},{id: "projects-human-following-robot",
           title: 'Human Following Robot',
           description: "Integrating YOLO and SLAM with a Clearpath Robotics Jackal to locate and track a specific person while listening to gesture-based commands.",
