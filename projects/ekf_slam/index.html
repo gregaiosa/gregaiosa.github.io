@@ -1,5 +1,630 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> EKF SLAM from Scratch | Gregory Aiosa </title> <meta name="author" content="Gregory Aiosa"> <meta name="description" content="Built an &lt;strong&gt;EKF SLAM&lt;/strong&gt; system in &lt;strong&gt;C++&lt;/strong&gt; and &lt;strong&gt;ROS 2&lt;/strong&gt; from scratch, including a custom &lt;strong&gt;2D rigid-body geometry library&lt;/strong&gt;, a &lt;strong&gt;physics-based simulator&lt;/strong&gt; with Gaussian noise, wheel slip, and collision detection, and a &lt;strong&gt;LiDAR landmark detection pipeline&lt;/strong&gt; using unsupervised clustering and circle regression. Implemented the full Extended Kalman Filter SLAM loop with both known and unknown data association."> <meta name="keywords" content="robotics, ros, automation, computer vision, SLAM"> <link rel="stylesheet" href="/assets/css/bootstrap.min.css?a4b3f509e79c54a512b890d73235ef04"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="/assets/css/academicons.min.css?f0b7046b84e425c55f3463ac249818f5"> <link defer rel="stylesheet" href="/assets/css/scholar-icons.css?62b2ac103a88034e6882a5be5f3e2772"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%E2%9A%9B%EF%B8%8F&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?d41d8cd98f00b204e9800998ecf8427e"> <link rel="canonical" href="https://gregaiosa.github.io/projects/ekf_slam/"> <script src="/assets/js/theme.js?a81d82887dd692e91686b43de4542f18"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
-    initTheme();
-  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> <span class="font-weight-bold">Gregory</span> Aiosa </a> <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse text-right" id="navbarNav"> <ul class="navbar-nav ml-auto flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">Projects </a> </li> <li class="nav-item "> <a class="nav-link" href="/assets/pdf/Gregory_Aiosa_Resume.pdf" target="_blank" rel="noopener noreferrer">Resume </a> </li> <li class="nav-item "> <a class="nav-link" href="mailto:gregory.aiosa@gmail.com" target="_blank" rel="noopener noreferrer">Email </a> </li> <li class="nav-item "> <a class="nav-link" href="https://www.linkedin.com/in/gregory-aiosa" target="_blank" rel="noopener noreferrer">LinkedIn </a> </li> <li class="nav-item "> <a class="nav-link" href="https://github.com/gregaiosa" target="_blank" rel="noopener noreferrer">Github </a> </li> <li class="nav-item "> <a class="nav-link" href="/about/">About </a> </li> <li class="nav-item"> <button id="search-toggle" title="Search" onclick="openSearchModal()"> <span class="nav-link">ctrl k <i class="ti ti-search"></i></span> </button> </li> <li class="toggle-container"> <button id="light-toggle" title="Change theme"> <i class="ti ti-sun-moon" id="light-toggle-system"></i> <i class="ti ti-moon-filled" id="light-toggle-dark"></i> <i class="ti ti-sun-filled" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">EKF SLAM from Scratch</h1> <p class="post-description">Built an <strong>EKF SLAM</strong> system in <strong>C++</strong> and <strong>ROS 2</strong> from scratch, including a custom <strong>2D rigid-body geometry library</strong>, a <strong>physics-based simulator</strong> with Gaussian noise, wheel slip, and collision detection, and a <strong>LiDAR landmark detection pipeline</strong> using unsupervised clustering and circle regression. Implemented the full Extended Kalman Filter SLAM loop with both known and unknown data association.</p> </header> <article> <div class="mt-3 mb-4"> <span class="badge badge-pill badge-info z-depth-1">ROS 2</span> <span class="badge badge-pill badge-info z-depth-1">C++</span> <span class="badge badge-pill badge-info z-depth-1">EKF SLAM</span> <span class="badge badge-pill badge-info z-depth-1">Armadillo</span> <span class="badge badge-pill badge-info z-depth-1">TurtleBot 3</span> <span class="badge badge-pill badge-info z-depth-1">LiDAR</span> <span class="badge badge-pill badge-info z-depth-1">RViz2</span> </div> <div class="row justify-content-center"> <div class="col-sm-8"> <figure> <video src="/assets/video/EKF_SLAM.mp4" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="EKF SLAM Simulation" autoplay="" controls="" loop="" muted=""></video> </figure> </div> </div> <h2 class="mt-2 mb-3">System Architecture</h2> <div class="row"> <div class="col-sm mt-3 mt-md-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/EKF_SLAM.svg" sizes="95vw"></source> <img src="/assets/img/EKF_SLAM.svg" class="img-fluid rounded z-depth-0" width="100%" height="auto" title="System Architecture" loading="eager" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> </div> </div> <h2>turtlelib</h2> <p> A ROS-independent custom C++ library that serves as the mathematical foundation for the entire system. All geometry, kinematics, and twist math are implemented here, keeping calculations cleanly separated from ROS node mechanics. </p> <ul> <li> <strong>SE(2) transforms</strong> — Rigid body transformations in 2D, including composition, inversion, and adjoint operations. Points and twists can be expressed in any frame.</li> <li> <strong>Twist integration</strong> — Computes the exact <code>Transform2D</code> corresponding to a body following a constant twist for one time unit, handling both pure rotation and simultaneous translation and rotation.</li> <li> <strong>Differential drive kinematics</strong> — A <code>DiffDrive</code> class implements forward kinematics (wheel positions → robot configuration) and inverse kinematics (desired body twist → wheel velocities), throwing an exception on impossible-to-follow twists.</li> <li> <strong>Unit tested with Catch2</strong> — Every function has at least one test case, including approximate floating-point comparisons and edge cases like pure rotation and simultaneous translation.</li> </ul> <h2>Simulator (nusim)</h2> <div class="row mt-3 align-items-center"> <div class="col-sm-7"> <p> A full-featured 2D physics simulator that acts as a stand-in for the real robot, providing ground truth state while injecting realistic sensor imperfections. </p> <ul> <li> <strong>Gaussian input noise</strong> — Zero-mean noise is added to non-zero commanded wheel velocities, modeling motor imprecision.</li> <li> <strong>Wheel slip</strong> — Uniform random slip is applied independently to each wheel, causing the reported encoder positions to diverge from the true wheel motion.</li> <li> <strong>Collision detection</strong> — The robot is represented as a circle. On intersection with a cylindrical obstacle, the robot is pushed to a tangent position while the wheels continue spinning simulating the real behavior of a robot bumping into an obstacle.</li> <li> <strong>Simulated LiDAR</strong> — Ray-casting against obstacle cylinders and arena walls at 5 Hz, with configurable noise, range, and angular resolution matching the real TurtleBot 3 LiDAR sensor.</li> <li> <strong>Fake sensor</strong> — Publishes noisy relative <em>(x, y)</em> measurements of landmarks with unique IDs, used for known-data-association testing during SLAM development.</li> </ul> </div> <div class="col-sm-5 mt-3 mt-sm-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/sim_rviz-480.webp 480w,/assets/img/sim_rviz-800.webp 800w,/assets/img/sim_rviz-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/sim_rviz.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="Nusim Environment" loading="lazy" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> <div class="caption mt-2"> Simulator environment with obstacles (red), walls, and simulated LiDAR scan. </div> </div> </div> <h2>LiDAR Landmark Detection</h2> <div class="row mt-3 align-items-center"> <div class="col-sm-7"> <p> A three-stage pipeline converts raw 2D LiDAR scan data into detected landmark positions, enabling SLAM to run without pre-placed fiducials or sensor tags. </p> <ul> <li> <strong>Clustering</strong> — Consecutive scan points within a distance threshold are grouped into clusters. The scan wraps around, so clusters spanning the 0°/360° boundary are handled explicitly. Clusters with fewer than 3 points are discarded.</li> <li> <strong>Circle regression</strong> — The Hyper circle-fitting algorithm fits a circle to each cluster using algebraic least squares with SVD decomposition.</li> <li> <strong>Radius filtering</strong> — Fitted circles outside the expected obstacle radius range (1–10 cm) are rejected, preventing walls and other large features from being classified as landmarks.</li> </ul> </div> <div class="col-sm-5 mt-3 mt-sm-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/landmark_detection-480.webp 480w,/assets/img/landmark_detection-800.webp 800w,/assets/img/landmark_detection-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/landmark_detection.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="Landmark Detection" loading="lazy" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> <div class="caption mt-2"> Detected landmarks (yellow) overlaid on the simulated environment. </div> </div> </div> <h2>EKF SLAM</h2> <div class="row mt-3 align-items-center"> <div class="col-sm-7"> <p> The core SLAM algorithm maintains a joint state estimate of the robot pose and all landmark positions, fusing odometry predictions with landmark observations using an Extended Kalman Filter. </p> <ul> <li> <strong>Predict step</strong> — On each odometry update, the robot's pose estimate is propagated forward using the <code>DiffDrive</code> forward kinematics. The covariance matrix grows, reflecting increased uncertainty between sensor updates.</li> <li> <strong>Update step</strong> — Each detected landmark measurement triggers a linearized Kalman update. The Jacobian of the measurement model is computed analytically and used to correct both the robot pose and the landmark positions simultaneously.</li> <li> <strong>Known data association</strong> — Validated first using the simulator's <code>fake_sensor</code> topic, which provides landmark IDs directly. Driving into obstacles to corrupt odometry confirmed the filter's ability to recover correct landmark positions even under large drift.</li> <li> <strong>Unknown data association</strong> — Extended to real LiDAR data using Mahalanobis distance gating. New observations that fall outside the gate distance for all known landmarks are initialized as new landmarks in the map.</li> <li> <strong>ROS REP 105 compliance</strong> — Publishes a <code>map → odom</code> transform such that the full <code>map → odom → base_footprint</code> chain reflects the SLAM-corrected robot pose.</li> </ul> </div> <div class="col-sm-5 mt-3 mt-sm-0"> <figure> <picture> <source class="responsive-img-srcset" srcset="/assets/img/slam_result-480.webp 480w,/assets/img/slam_result-800.webp 800w,/assets/img/slam_result-1400.webp 1400w," type="image/webp" sizes="95vw"></source> <img src="/assets/img/slam_result.png" class="img-fluid rounded z-depth-1" width="100%" height="auto" title="EKF SLAM Result" loading="lazy" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"> </picture> </figure> <div class="caption mt-2"> End of closed-loop run: ground truth (red), odometry (blue), and SLAM estimate (green). </div> </div> </div> <h2>Results</h2> <p> After a closed-loop circuit with noise enabled and a limited landmark detection radius, the SLAM estimate substantially outperformed raw odometry. Final pose error after one loop: </p> <ul> <li> <strong>Odometry</strong> — x: 0.159 m, y: 0.033 m, θ: –0.338 rad</li> <li> <strong>SLAM estimate</strong> — x: 0.005 m, y: -0.002 m, θ: 0.111 rad</li> </ul> <p><a href="https://github.com/gregaiosa/ekf_slam" class="btn z-depth-0" role="button" rel="external nofollow noopener" target="_blank">View Code on GitHub</a></p> </article> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Gregory Aiosa. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. </div> </footer> <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> <script src="/assets/js/bootstrap.bundle.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?a0db7e5d5c70cc3252b3138b0c91dcaf" type="text/javascript"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/js/zoom.js?85ddb88934d28b74e78031fd54cf8308"></script> <script src="/assets/js/no_defer.js?2781658a0a2b13ed609542042a859126"></script> <script defer src="/assets/js/common.js?c15de51d4bb57887caa2c21988d97279"></script> <script defer src="/assets/js/copy_code.js?c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?d9f17b6adc2311cbabd747f4538bb15f"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/js/mathjax-setup.js?a5bb4e6a542c546dd929b24b8b236dfd"></script> <script defer src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6" crossorigin="anonymous"></script> <script defer src="/assets/js/progress-bar.js?2f30e0e6801ea8f5036fa66e1ab0a71a" type="text/javascript"></script> <script src="/assets/js/vanilla-back-to-top.min.js?f40d453793ff4f64e238e420181a1d17"></script> <script>
-    addBackToTop();
-  </script> <script type="module" src="/assets/js/search/ninja-keys.min.js?a3446f084dcaecc5f75aa1757d087dcf"></script> <ninja-keys hidebreadcrumbs noautoloadmdicons placeholder="Type to start searching"></ninja-keys> <script src="/assets/js/search-setup.js?6c304f7b1992d4b60f7a07956e52f04a"></script> <script src="/assets/js/search-data.js"></script> <script src="/assets/js/shortcut-key.js?6f508d74becd347268a7f822bca7309d"></script> </body> </html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>EKF SLAM from Scratch | Gregory Aiosa</title>
+    <meta name="author" content="Gregory Aiosa" />
+    <meta
+      name="description"
+      content="Built an &lt;strong&gt;EKF SLAM&lt;/strong&gt; system in &lt;strong&gt;C++&lt;/strong&gt; and &lt;strong&gt;ROS 2&lt;/strong&gt; from scratch, including a custom &lt;strong&gt;2D rigid-body geometry library&lt;/strong&gt;, a &lt;strong&gt;physics-based simulator&lt;/strong&gt; with Gaussian noise, wheel slip, and collision detection, and a &lt;strong&gt;LiDAR landmark detection pipeline&lt;/strong&gt; using unsupervised clustering and circle regression. Implemented the full Extended Kalman Filter SLAM loop with both known and unknown data association."
+    />
+    <meta
+      name="keywords"
+      content="robotics, ros, automation, computer vision, SLAM"
+    />
+    <link
+      rel="stylesheet"
+      href="/assets/css/bootstrap.min.css?a4b3f509e79c54a512b890d73235ef04"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css"
+      integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw="
+      crossorigin="anonymous"
+    />
+    <link
+      defer
+      rel="stylesheet"
+      href="/assets/css/academicons.min.css?f0b7046b84e425c55f3463ac249818f5"
+    />
+    <link
+      defer
+      rel="stylesheet"
+      href="/assets/css/scholar-icons.css?62b2ac103a88034e6882a5be5f3e2772"
+    />
+    <link
+      defer
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"
+    />
+    <link
+      defer
+      rel="stylesheet"
+      href="/assets/css/jekyll-pygments-themes-github.css?591dab5a4e56573bf4ef7fd332894c99"
+      media=""
+      id="highlight_theme_light"
+    />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%E2%9A%9B%EF%B8%8F&lt;/text&gt;&lt;/svg&gt;"
+    />
+    <link
+      rel="stylesheet"
+      href="/assets/css/main.css?d41d8cd98f00b204e9800998ecf8427e"
+    />
+    <link
+      rel="canonical"
+      href="https://gregaiosa.github.io/projects/ekf_slam/"
+    />
+    <script src="/assets/js/theme.js?a81d82887dd692e91686b43de4542f18"></script>
+    <link
+      defer
+      rel="stylesheet"
+      href="/assets/css/jekyll-pygments-themes-native.css?5847e5ed4a4568527aa6cfab446049ca"
+      media="none"
+      id="highlight_theme_dark"
+    />
+    <script>
+      initTheme();
+    </script>
+  </head>
+  <body class="fixed-top-nav">
+    <header>
+      <nav
+        id="navbar"
+        class="navbar navbar-light navbar-expand-sm fixed-top"
+        role="navigation"
+      >
+        <div class="container">
+          <a class="navbar-brand title font-weight-lighter" href="/">
+            <span class="font-weight-bold">Gregory</span> Aiosa
+          </a>
+          <button
+            class="navbar-toggler collapsed ml-auto"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar top-bar"></span>
+            <span class="icon-bar middle-bar"></span>
+            <span class="icon-bar bottom-bar"></span>
+          </button>
+          <div class="collapse navbar-collapse text-right" id="navbarNav">
+            <ul class="navbar-nav ml-auto flex-nowrap">
+              <li class="nav-item">
+                <a class="nav-link" href="/">Projects </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="/assets/pdf/Gregory_Aiosa_Resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Resume
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="mailto:gregory.aiosa@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Email
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="https://www.linkedin.com/in/gregory-aiosa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >LinkedIn
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="https://github.com/gregaiosa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Github
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about/">About </a>
+              </li>
+              <li class="nav-item">
+                <button
+                  id="search-toggle"
+                  title="Search"
+                  onclick="openSearchModal()"
+                >
+                  <span class="nav-link"
+                    >ctrl k <i class="ti ti-search"></i
+                  ></span>
+                </button>
+              </li>
+              <li class="toggle-container">
+                <button id="light-toggle" title="Change theme">
+                  <i class="ti ti-sun-moon" id="light-toggle-system"></i>
+                  <i class="ti ti-moon-filled" id="light-toggle-dark"></i>
+                  <i class="ti ti-sun-filled" id="light-toggle-light"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <progress id="progress" value="0">
+        <div class="progress-container"><span class="progress-bar"></span></div>
+      </progress>
+    </header>
+    <div class="container mt-5" role="main">
+      <div class="post">
+        <header class="post-header">
+          <h1 class="post-title">EKF SLAM from Scratch</h1>
+          <p class="post-description">
+            Built an <strong>EKF SLAM</strong> system in
+            <strong>C++</strong> and <strong>ROS 2</strong> from scratch,
+            including a custom <strong>2D rigid-body geometry library</strong>,
+            a <strong>physics-based simulator</strong> with Gaussian noise,
+            wheel slip, and collision detection, and a
+            <strong>LiDAR landmark detection pipeline</strong> using
+            unsupervised clustering and circle regression. Implemented the full
+            Extended Kalman Filter SLAM loop with both known and unknown data
+            association.
+          </p>
+        </header>
+        <article>
+          <div class="mt-3 mb-4">
+            <span class="badge badge-pill badge-info z-depth-1">ROS 2</span>
+            <span class="badge badge-pill badge-info z-depth-1">C++</span>
+            <span class="badge badge-pill badge-info z-depth-1">EKF SLAM</span>
+            <span class="badge badge-pill badge-info z-depth-1">Armadillo</span>
+            <span class="badge badge-pill badge-info z-depth-1"
+              >TurtleBot 3</span
+            >
+            <span class="badge badge-pill badge-info z-depth-1">LiDAR</span>
+            <span class="badge badge-pill badge-info z-depth-1">RViz2</span>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-sm-8">
+              <figure>
+                <video
+                  src="/assets/video/EKF_SLAM.mp4"
+                  class="img-fluid rounded z-depth-1"
+                  width="100%"
+                  height="auto"
+                  title="EKF SLAM Simulation"
+                  autoplay=""
+                  controls=""
+                  loop=""
+                  muted=""
+                ></video>
+              </figure>
+            </div>
+          </div>
+          <h2 class="mt-2 mb-3">System Architecture</h2>
+          <div class="row">
+            <div class="col-sm mt-3 mt-md-0">
+              <figure>
+                <picture>
+                  <source
+                    class="responsive-img-srcset"
+                    srcset="/assets/img/EKF_SLAM.svg"
+                    sizes="95vw"
+                  />
+                  <img
+                    src="/assets/img/EKF_SLAM.svg"
+                    class="img-fluid rounded z-depth-0"
+                    width="100%"
+                    height="auto"
+                    title="System Architecture"
+                    loading="eager"
+                    onerror="
+                      this.onerror = null;
+                      $('.responsive-img-srcset').remove();
+                    "
+                  />
+                </picture>
+              </figure>
+            </div>
+          </div>
+          <h2>turtlelib</h2>
+          <p>
+            A ROS-independent custom C++ library that serves as the mathematical
+            foundation for the entire system. All geometry, kinematics, and
+            twist math are implemented here, keeping calculations cleanly
+            separated from ROS node mechanics.
+          </p>
+          <ul>
+            <li>
+              <strong>SE(2) transforms</strong> — Rigid body transformations in
+              2D, including composition, inversion, and adjoint operations.
+              Points and twists can be expressed in any frame.
+            </li>
+            <li>
+              <strong>Twist integration</strong> — Computes the exact
+              <code>Transform2D</code> corresponding to a body following a
+              constant twist for one time unit, handling both pure rotation and
+              simultaneous translation and rotation.
+            </li>
+            <li>
+              <strong>Differential drive kinematics</strong> — A
+              <code>DiffDrive</code> class implements forward kinematics (wheel
+              positions → robot configuration) and inverse kinematics (desired
+              body twist → wheel velocities), throwing an exception on
+              impossible-to-follow twists.
+            </li>
+            <li>
+              <strong>Unit tested with Catch2</strong> — Every function has at
+              least one test case, including approximate floating-point
+              comparisons and edge cases like pure rotation and simultaneous
+              translation.
+            </li>
+          </ul>
+          <h2>Simulator (nusim)</h2>
+          <div class="row mt-3 align-items-center">
+            <div class="col-sm-7">
+              <p>
+                A full-featured 2D physics simulator that acts as a stand-in for
+                the real robot, providing ground truth state while injecting
+                realistic sensor imperfections.
+              </p>
+              <ul>
+                <li>
+                  <strong>Gaussian input noise</strong> — Zero-mean noise is
+                  added to non-zero commanded wheel velocities, modeling motor
+                  imprecision.
+                </li>
+                <li>
+                  <strong>Wheel slip</strong> — Uniform random slip is applied
+                  independently to each wheel, causing the reported encoder
+                  positions to diverge from the true wheel motion.
+                </li>
+                <li>
+                  <strong>Collision detection</strong> — The robot is
+                  represented as a circle. On intersection with a cylindrical
+                  obstacle, the robot is pushed to a tangent position while the
+                  wheels continue spinning simulating the real behavior of a
+                  robot bumping into an obstacle.
+                </li>
+                <li>
+                  <strong>Simulated LiDAR</strong> — Ray-casting against
+                  obstacle cylinders and arena walls at 5 Hz, with configurable
+                  noise, range, and angular resolution matching the real
+                  TurtleBot 3 LiDAR sensor.
+                </li>
+                <li>
+                  <strong>Fake sensor</strong> — Publishes noisy relative
+                  <em>(x, y)</em> measurements of landmarks with unique IDs,
+                  used for known-data-association testing during SLAM
+                  development.
+                </li>
+              </ul>
+            </div>
+            <div class="col-sm-5 mt-3 mt-sm-0">
+              <figure>
+                <picture>
+                  <source
+                    class="responsive-img-srcset"
+                    srcset="
+                      /assets/img/sim_rviz-480.webp   480w,
+                      /assets/img/sim_rviz-800.webp   800w,
+                      /assets/img/sim_rviz-1400.webp 1400w
+                    "
+                    type="image/webp"
+                    sizes="95vw"
+                  />
+                  <img
+                    src="/assets/img/sim_rviz.png"
+                    class="img-fluid rounded z-depth-1"
+                    width="100%"
+                    height="auto"
+                    title="Nusim Environment"
+                    loading="lazy"
+                    onerror="
+                      this.onerror = null;
+                      $('.responsive-img-srcset').remove();
+                    "
+                  />
+                </picture>
+              </figure>
+              <div class="caption mt-2">
+                Simulator environment with obstacles (red), walls, and simulated
+                LiDAR scan.
+              </div>
+            </div>
+          </div>
+          <h2>LiDAR Landmark Detection</h2>
+          <div class="row mt-3 align-items-center">
+            <div class="col-sm-7">
+              <p>
+                A three-stage pipeline converts raw 2D LiDAR scan data into
+                detected landmark positions, enabling SLAM to run without
+                pre-placed fiducials or sensor tags.
+              </p>
+              <ul>
+                <li>
+                  <strong>Clustering</strong> — Consecutive scan points within a
+                  distance threshold are grouped into clusters. The scan wraps
+                  around, so clusters spanning the 0°/360° boundary are handled
+                  explicitly. Clusters with fewer than 3 points are discarded.
+                </li>
+                <li>
+                  <strong>Circle regression</strong> — The Hyper circle-fitting
+                  algorithm fits a circle to each cluster using algebraic least
+                  squares with SVD decomposition.
+                </li>
+                <li>
+                  <strong>Radius filtering</strong> — Fitted circles outside the
+                  expected obstacle radius range (1–10 cm) are rejected,
+                  preventing walls and other large features from being
+                  classified as landmarks.
+                </li>
+              </ul>
+            </div>
+            <div class="col-sm-5 mt-3 mt-sm-0">
+              <figure>
+                <picture>
+                  <source
+                    class="responsive-img-srcset"
+                    srcset="
+                      /assets/img/landmark_detection-480.webp   480w,
+                      /assets/img/landmark_detection-800.webp   800w,
+                      /assets/img/landmark_detection-1400.webp 1400w
+                    "
+                    type="image/webp"
+                    sizes="95vw"
+                  />
+                  <img
+                    src="/assets/img/landmark_detection.png"
+                    class="img-fluid rounded z-depth-1"
+                    width="100%"
+                    height="auto"
+                    title="Landmark Detection"
+                    loading="lazy"
+                    onerror="
+                      this.onerror = null;
+                      $('.responsive-img-srcset').remove();
+                    "
+                  />
+                </picture>
+              </figure>
+              <div class="caption mt-2">
+                Detected landmarks (yellow) overlaid on the simulated
+                environment.
+              </div>
+            </div>
+          </div>
+          <h2>EKF SLAM</h2>
+          <div class="row mt-3 align-items-center">
+            <div class="col-sm-7">
+              <p>
+                The core SLAM algorithm maintains a joint state estimate of the
+                robot pose and all landmark positions, fusing odometry
+                predictions with landmark observations using an Extended Kalman
+                Filter.
+              </p>
+              <ul>
+                <li>
+                  <strong>Predict step</strong> — On each odometry update, the
+                  robot's pose estimate is propagated forward using the
+                  <code>DiffDrive</code> forward kinematics. The covariance
+                  matrix grows, reflecting increased uncertainty between sensor
+                  updates.
+                </li>
+                <li>
+                  <strong>Update step</strong> — Each detected landmark
+                  measurement triggers a linearized Kalman update. The Jacobian
+                  of the measurement model is computed analytically and used to
+                  correct both the robot pose and the landmark positions
+                  simultaneously.
+                </li>
+                <li>
+                  <strong>Known data association</strong> — Validated first
+                  using the simulator's <code>fake_sensor</code> topic, which
+                  provides landmark IDs directly. Driving into obstacles to
+                  corrupt odometry confirmed the filter's ability to recover
+                  correct landmark positions even under large drift.
+                </li>
+                <li>
+                  <strong>Unknown data association</strong> — Extended to real
+                  LiDAR data using Mahalanobis distance gating. New observations
+                  that fall outside the gate distance for all known landmarks
+                  are initialized as new landmarks in the map.
+                </li>
+                <li>
+                  <strong>ROS REP 105 compliance</strong> — Publishes a
+                  <code>map → odom</code> transform such that the full
+                  <code>map → odom → base_footprint</code> chain reflects the
+                  SLAM-corrected robot pose.
+                </li>
+              </ul>
+            </div>
+            <div class="col-sm-5 mt-3 mt-sm-0">
+              <figure>
+                <picture>
+                  <source
+                    class="responsive-img-srcset"
+                    srcset="
+                      /assets/img/slam_result-480.webp   480w,
+                      /assets/img/slam_result-800.webp   800w,
+                      /assets/img/slam_result-1400.webp 1400w
+                    "
+                    type="image/webp"
+                    sizes="95vw"
+                  />
+                  <img
+                    src="/assets/img/slam_result.png"
+                    class="img-fluid rounded z-depth-1"
+                    width="100%"
+                    height="auto"
+                    title="EKF SLAM Result"
+                    loading="lazy"
+                    onerror="
+                      this.onerror = null;
+                      $('.responsive-img-srcset').remove();
+                    "
+                  />
+                </picture>
+              </figure>
+              <div class="caption mt-2">
+                End of closed-loop run: ground truth (red), odometry (blue), and
+                SLAM estimate (green).
+              </div>
+            </div>
+          </div>
+          <h2>Results</h2>
+          <p>
+            After a closed-loop circuit with noise enabled and a limited
+            landmark detection radius, the SLAM estimate substantially
+            outperformed raw odometry. Final pose error after one loop:
+          </p>
+          <ul>
+            <li>
+              <strong>Odometry</strong> — x: 0.159 m, y: 0.033 m, θ: –0.338 rad
+            </li>
+            <li>
+              <strong>SLAM estimate</strong> — x: 0.005 m, y: -0.002 m, θ: 0.111
+              rad
+            </li>
+          </ul>
+          <p>
+            <a
+              href="https://github.com/gregaiosa/ekf_slam"
+              class="btn z-depth-0"
+              role="button"
+              rel="external nofollow noopener"
+              target="_blank"
+              >View Code on GitHub</a
+            >
+          </p>
+        </article>
+      </div>
+    </div>
+    <footer class="fixed-bottom" role="contentinfo">
+      <div class="container mt-0">
+        © Copyright 2026 Gregory Aiosa. Powered by
+        <a
+          href="https://jekyllrb.com/"
+          target="_blank"
+          rel="external nofollow noopener"
+          >Jekyll</a
+        >
+        with
+        <a
+          href="https://github.com/alshedivat/al-folio"
+          rel="external nofollow noopener"
+          target="_blank"
+          >al-folio</a
+        >
+        theme. Hosted by
+        <a
+          href="https://pages.github.com/"
+          target="_blank"
+          rel="external nofollow noopener"
+          >GitHub Pages</a
+        >.
+      </div>
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js"
+      integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+      integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js"
+      integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="/assets/js/masonry.js?a0db7e5d5c70cc3252b3138b0c91dcaf"
+      type="text/javascript"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"
+      integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="/assets/js/zoom.js?85ddb88934d28b74e78031fd54cf8308"
+    ></script>
+    <script src="/assets/js/no_defer.js?2781658a0a2b13ed609542042a859126"></script>
+    <script
+      defer
+      src="/assets/js/common.js?c15de51d4bb57887caa2c21988d97279"
+    ></script>
+    <script
+      defer
+      src="/assets/js/copy_code.js?c8a01c11a92744d44b093fc3bda915df"
+      type="text/javascript"
+    ></script>
+    <script
+      defer
+      src="/assets/js/jupyter_new_tab.js?d9f17b6adc2311cbabd747f4538bb15f"
+    ></script>
+    <script
+      defer
+      type="text/javascript"
+      id="MathJax-script"
+      src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"
+      integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="
+      crossorigin="anonymous"
+    ></script>
+    <script src="/assets/js/mathjax-setup.js?a5bb4e6a542c546dd929b24b8b236dfd"></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="/assets/js/progress-bar.js?2f30e0e6801ea8f5036fa66e1ab0a71a"
+      type="text/javascript"
+    ></script>
+    <script src="/assets/js/vanilla-back-to-top.min.js?f40d453793ff4f64e238e420181a1d17"></script>
+    <script>
+      addBackToTop();
+    </script>
+    <script
+      type="module"
+      src="/assets/js/search/ninja-keys.min.js?a3446f084dcaecc5f75aa1757d087dcf"
+    ></script>
+    <ninja-keys
+      hidebreadcrumbs
+      noautoloadmdicons
+      placeholder="Type to start searching"
+    ></ninja-keys>
+    <script src="/assets/js/search-setup.js?6c304f7b1992d4b60f7a07956e52f04a"></script>
+    <script src="/assets/js/search-data.js"></script>
+    <script src="/assets/js/shortcut-key.js?6f508d74becd347268a7f822bca7309d"></script>
+  </body>
+</html>
