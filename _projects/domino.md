@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Robot Domino Artist
-description: Developed a Python ROS 2 package for a Franka Emika Robot arm to find and manipulate dominoes. Utilized OpenCV to detect the dominoes and implemented force control for precise placement.
+description: Developed a <strong>Python ROS 2</strong> package for a <strong>Franka Emika Robot arm</strong> to find and manipulate dominoes. Utilized <strong>OpenCV</strong> to detect the dominoes and implemented <strong>force control</strong> for precise placement.
 img: assets/img/Squiggle_Placement_cropped.png
 importance: 2
 # category: work
