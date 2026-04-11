@@ -25,7 +25,7 @@ Implemented autonomous human-following on a Clearpath Jackal mobile robot. The s
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include video.liquid path="assets/video/following_video_both.mp4" title="Human following robot demonstration" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
+        {% include video.liquid path="assets/video/Full_Follow_Video.mp4" title="Human following robot demonstration" class="img-fluid rounded z-depth-1" controls=true autoplay=true loop=true muted=true width="100%" %}
     </div>
 </div>
 
