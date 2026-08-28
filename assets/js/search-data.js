@@ -46,7 +46,7 @@ ninja.data = [{
           },
         },{id: "projects-1-dof-robot-gripper-optimized-for-haptic-feedback",
           title: '1 DOF Robot Gripper Optimized for Haptic Feedback',
-          description: "A custom 1 Degree of Freedom (DOF) robotic gripper modified from the SO-101, designed specifically for high-fidelity haptic feedback, maximizing backdriveability and minimizing backlash.",
+          description: "A custom 1 Degree of Freedom (DOF) robotic gripper adapted to fit the SO-101, designed specifically for high-fidelity haptic feedback, maximizing backdriveability and minimizing backlash.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/1_dof_robot_gripper/";
             },},{id: "projects-robot-domino-artist",
