@@ -2,7 +2,7 @@
 layout: page
 title: 1 DOF Robot Gripper Optimized for Haptic Feedback
 description: A custom 1 Degree of Freedom (DOF) robotic gripper adapted to fit the <strong>SO-101</strong>, designed specifically for high-fidelity <strong>haptic feedback</strong>, maximizing backdriveability and minimizing backlash.
-img: assets/img/gripper_thumbnail_placeholder.png
+img: assets/img/gripper_thumbnail_cropped.png
 importance: 2
 github: https://github.com/gregaiosa/1DOF_Gripper
 # category: work
